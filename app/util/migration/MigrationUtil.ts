@@ -34,18 +34,22 @@ export class MigrationUtil{
     
     private executeMigrationsInternal(schemaVersion:SchemaVersion, migrations:Migration[]):Promise<any>{
         if ( migrations.length > 0 ){
-            var migration = migrations[0];
+            let migration = migrations[0];
             if ( migration.getVersion() > schemaVersion.version ){
                 // run the migration
                 return migration.migrate().then(() => {
                     schemaVersion.version++;
                     return this.schemaVersionDao.save(schemaVersion);
                 }).then(() => {
-                   return this.executeMigrationsInternal(schemaVersion, migrations.splice(0, 1)); 
+                   let remainingMigrations = migrations.concat();
+                   remainingMigrations.shift();
+                   return this.executeMigrationsInternal(schemaVersion, remainingMigrations); 
                 });
             }
             else{
-                return this.executeMigrationsInternal(schemaVersion, migrations.splice(0, 1)); 
+                let remainingMigrations = migrations.concat();
+                remainingMigrations.shift();
+                return this.executeMigrationsInternal(schemaVersion, remainingMigrations); 
             }
         }
         else{

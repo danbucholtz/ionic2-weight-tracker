@@ -4,12 +4,10 @@ import {Migration} from "./Migration";
 
 import {WeighInDao} from "../../dao/weigh-in/WeighInDao";
 
-Injectable()
+@Injectable()
 export class MigrationOne implements Migration{
     
-    private weighInDao:WeighInDao;
-    
-    constructor(weighInDao:WeighInDao){
+    constructor(private weighInDao:WeighInDao){
         this.weighInDao = weighInDao;
     }
     

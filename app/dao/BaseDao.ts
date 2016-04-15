@@ -89,7 +89,7 @@ export class BaseDao<T extends IEntity>{
             entity.updated = new Date();
             entity.created = new Date();
             let persistableObject = this.converter.convertModelToPersistableFormat(entity);
-            return this.save(persistableObject).then(saved => {
+            return this.insert(persistableObject).then(saved => {
                return this.converter.convertPersistableFormatToModel(saved); 
             });
         }

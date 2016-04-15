@@ -1,5 +1,5 @@
 import "es6-shim";
-import {App, IonicApp, Loading, Platform} from "ionic-angular";
+import {Alert, App, IonicApp, Loading, Platform} from "ionic-angular";
 import {StatusBar} from "ionic-native";
 import {TabsPage} from "./pages/tabs/tabs";
 import {getProviders} from "./AppFactory";
@@ -14,10 +14,11 @@ import {MigrationUtil} from "./util/migration/MigrationUtil";
 export class MyApp {
     rootPage:any = TabsPage;
 
-    constructor(app:IonicApp, platform:Platform) {
+    constructor(private app:IonicApp, migrationUtil:MigrationUtil, platform:Platform) {
+        this.app = app;
         platform.ready().then(() => {
+            this.rootPage = TabsPage;
             StatusBar.styleDefault();
-      
             let loading = Loading.create({
                 content: "Initializing..." 
             });
@@ -29,10 +30,10 @@ export class MyApp {
                 loading.dismiss();
             }, 500);
             
-            this.rootPage = TabsPage;
-      
+            this.overrideAlert();
+            
             // do the migrations, then remove the loader
-            /*migrationUtil.executeMigrations().then(() => {
+            migrationUtil.executeMigrations().then(() => {
                 // set a short timeout for the sake of presentation
                 setTimeout(() => {
                     loading.dismiss();
@@ -41,7 +42,21 @@ export class MyApp {
                 loading.dismiss();
                 alert(`An error occurred during migrations - ${error.message}`); 
             });
-            */
+            
         });
+    }
+    
+    overrideAlert(){
+        // this is probably uncool but I am super lazy so be cool bruh
+        var self = this;
+        window.alert = content => {
+            let alert = Alert.create({
+                title: "Error",
+                subTitle: content,
+                buttons: ["Ok"]
+            });
+            let nav = self.app.getComponent("nav");
+            nav.present(alert);
+        };
     }
 }

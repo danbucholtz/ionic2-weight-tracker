@@ -2,15 +2,17 @@ import {Injectable} from "angular2/core";
 
 import {Migration} from "./Migration";
 import {MigrationOne} from "./MigrationOne";
+import {MigrationTwo} from "./MigrationTwo";
 
-Injectable()
+@Injectable()
 export class MigrationProvider{
     
     private _migrations:Migration[];
     
-    constructor(migrationOne:MigrationOne){
+    constructor(migrationOne:MigrationOne, migrationTwo:MigrationTwo){
         this._migrations = [];
         this._migrations.push(migrationOne);
+        this._migrations.push(migrationTwo);
     }
     
     getMigrations():Migration[]{
