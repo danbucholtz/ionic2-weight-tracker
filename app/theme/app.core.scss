@@ -6,3 +6,13 @@
 // These are the imports which make up the design of this app.
 // By default each design mode includes these shared imports.
 // App Shared Sass variables belong in app.variables.scss.
+
+@import 'app.variables';
+
+.light-background{
+    background-color: color($colors, light);
+}
+
+.gray-text{
+    color: #7f7f7f;
+}

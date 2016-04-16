@@ -21,7 +21,7 @@ import {NgZone} from "angular2/core";
             <ion-input type="number" [(ngModel)]="weighIn.weight" min="50" max="1000"></ion-input>
         </ion-item>
         <button ion-item (click)="takePhoto()">
-            Take Photo
+            <span class="gray-text">Take Photo</span>
         </button>
         <ion-item *ngFor="#photo of photos">
             <img [src]="photo.filePath">
