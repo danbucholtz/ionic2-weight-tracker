@@ -81,7 +81,7 @@ export class BaseDao<T extends IEntity>{
             entity.updated = new Date();
             let persistableObject = this.converter.convertModelToPersistableFormat(entity);
             return this.update(persistableObject).then(saved => {
-               return this.converter.convertPersistableFormatToModel(saved); 
+               return this.converter.convertPersistableFormatToModel(persistableObject); 
             });
         }
         else{
@@ -90,7 +90,7 @@ export class BaseDao<T extends IEntity>{
             entity.created = new Date();
             let persistableObject = this.converter.convertModelToPersistableFormat(entity);
             return this.insert(persistableObject).then(saved => {
-               return this.converter.convertPersistableFormatToModel(saved); 
+               return this.converter.convertPersistableFormatToModel(persistableObject); 
             });
         }
     }
