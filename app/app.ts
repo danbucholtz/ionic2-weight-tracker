@@ -26,13 +26,12 @@ export class MyApp {
             
             nav.present(loading);
             
-            setTimeout(() => {
-                loading.dismiss();
-            }, 500);
-            
+            // always show the beautiful ionic alerts instead of
+            // default JS alerts, but be aware these bad boys
+            // no longer block execution
             this.overrideAlert();
             
-            // do the migrations, then remove the loader
+            // do the database migrations, then remove the loader
             migrationUtil.executeMigrations().then(() => {
                 // set a short timeout for the sake of presentation
                 setTimeout(() => {
