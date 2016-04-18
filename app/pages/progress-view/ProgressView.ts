@@ -24,7 +24,7 @@ declare let Chart:any;
                 </ion-select>
             </ion-item>
         </ion-list>
-        <canvas id="canvas" width="100%" height="100%"></canvas>
+        <canvas id="canvas"></canvas>
     </ion-content>
     `
 })
