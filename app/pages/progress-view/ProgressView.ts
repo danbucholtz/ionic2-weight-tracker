@@ -59,7 +59,7 @@ export class ProgressView {
     
     resizeCanvas(){
         let container = document.getElementById("chartContainer");
-        var listHeight = (<HTMLElement> (<HTMLElement> container.children[0]).children[0]).offsetHeight;
+        let listHeight = (<HTMLElement> (<HTMLElement> container.children[0]).children[0]).offsetHeight;
         let canvas = this.getCanvasElement();
         canvas.height = container.offsetHeight - listHeight - 50;
         canvas.width = container.offsetWidth;
@@ -77,7 +77,7 @@ export class ProgressView {
             datasets: datasets
         };
         let myLineChart = new Chart(context).Line(data, {
-            legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+            legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (let i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
         });
     }
     
@@ -137,9 +137,9 @@ export class ProgressView {
             minimumValue = Math.min(minimumValue, value);
             maximumValue = Math.max(maximumValue, value);
         });
-        var difference:number = maximumValue - minimumValue;
-        var differencePerDataPoint:number = difference/numberOfDataPoints;
-        var dataPoints:number[] = [];
+        let difference:number = maximumValue - minimumValue;
+        let differencePerDataPoint:number = difference/numberOfDataPoints;
+        let dataPoints:number[] = [];
         for ( let i = 0 ; i < numberOfDataPoints; i++ ){
             let averagedValueForPoint:number = maximumValue - (i * differencePerDataPoint);
             dataPoints.push(averagedValueForPoint);
@@ -167,7 +167,7 @@ export class ProgressView {
             }
             maximumValue = Math.max(maximumValue, value);
         });
-        var dataPoints:number[] = [];
+        let dataPoints:number[] = [];
         for ( let i = 0; i < numberOfDataPoints; i++ ){
             let idealWeight = maximumValue - (i * averageLossPerDay);
             dataPoints.push(idealWeight);

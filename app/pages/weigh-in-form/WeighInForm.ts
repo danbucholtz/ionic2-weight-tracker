@@ -83,7 +83,7 @@ export class WeighInForm{
         // first, save the weighIn object
         this.weighInDao.save(this.weighIn).then(entity => {
             // sweet, the weighIn was saved, now loop through the photos and save each of those
-            var promises = [];
+            let promises = [];
             for ( let photo of this.photos ){
                 photo.weighInId = entity.id;
                 promises.push(this.photoDao.save(photo));
