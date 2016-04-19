@@ -30,11 +30,11 @@ declare let Chart:any;
 })
 export class ProgressView {
     private target:string;
-    
+
     constructor(private weighInDao:WeighInDao){
         this.weighInDao = weighInDao;
     }
-   
+
     onPageDidEnter(){
         this.initializeData();
         setTimeout(() => {
@@ -42,21 +42,21 @@ export class ProgressView {
             this.loadDataAndRenderGraph();
         }, 150);
     }
-   
+
     loadDataAndRenderGraph():void{
         this.loadData().then(data => {
             return this.processData(data)
         }).then(resultsObj => {
-            this.renderCanvas(resultsObj.labels, resultsObj.dataSets); 
+            this.renderCanvas(resultsObj.labels, resultsObj.dataSets);
         }).catch(error => {
-           alert(`Failed to load data and render canvas - ${error.message}`); 
+           alert(`Failed to load data and render canvas - ${error.message}`);
         });
     }
-    
+
     initializeData():void{
         this.target = "2";
     }
-    
+
     resizeCanvas(){
         let container = document.getElementById("chartContainer");
         let listHeight = (<HTMLElement> (<HTMLElement> container.children[0]).children[0]).offsetHeight;
@@ -64,11 +64,11 @@ export class ProgressView {
         canvas.height = container.offsetHeight - listHeight - 50;
         canvas.width = container.offsetWidth;
     }
-    
+
     getCanvasElement():HTMLCanvasElement{
-        return <HTMLCanvasElement> document.getElementById("canvas");  
+        return <HTMLCanvasElement> document.getElementById("canvas");
     }
-    
+
     renderCanvas(labels:string[], datasets:any[]):void{
         let canvas:HTMLCanvasElement = this.getCanvasElement();
         let context:CanvasRenderingContext2D = canvas.getContext("2d");
@@ -76,15 +76,13 @@ export class ProgressView {
             labels: labels,
             datasets: datasets
         };
-        let myLineChart = new Chart(context).Line(data, {
-            legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (let i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-        });
+        let myLineChart = new Chart(context).Line(data, {});
     }
-    
+
     loadData():Promise<WeighIn[]>{
         return this.weighInDao.getAll();
     }
-    
+
     processData(weighIns:WeighIn[]){
         let map:Map<string, WeighIn[]> = this.getWeighInByDateMap(weighIns);
         let averagedMap:Map<string, number> = this.getAverageWeightForDay(map);
@@ -97,7 +95,7 @@ export class ProgressView {
             dataSets: [realWorldDataSet, trendDataSet, idealDataSet]
         };
     }
-    
+
     getLabels(map:Map<string, number>):string[]{
         let results:string[] = [];
         map.forEach(function(value:number, key:string, map:Map<string, number>){
@@ -105,7 +103,7 @@ export class ProgressView {
         });
         return results;
     }
-    
+
     getRealWorldDataSet(map:Map<string, number>):any{
         let dataPoints:number[] = [];
          map.forEach(function(value:number, key:string, map:Map<string, number>){
@@ -122,7 +120,7 @@ export class ProgressView {
             data: dataPoints
         };
     }
-    
+
     getTrendDataSet(map:Map<string, number>):any{
         let numberOfDataPoints:number = map.size;
         let minimumValue:number = -1;
@@ -155,7 +153,7 @@ export class ProgressView {
             data: dataPoints
         }
     }
-    
+
     getIdealDataSet(map:Map<string, number>):any{
         let numberOfDataPoints:number = map.size;
         let averageLossPerWeek:number = parseFloat(this.target);
@@ -183,7 +181,7 @@ export class ProgressView {
             data: dataPoints
         }
     }
-    
+
     getWeighInByDateMap(weighIns:WeighIn[]):Map<string, WeighIn[]>{
         let map:Map<string, WeighIn[]> = new Map<string, WeighIn[]>();
         weighIns.forEach(weighIn => {
@@ -197,7 +195,7 @@ export class ProgressView {
         });
         return map;
     }
-    
+
     getAverageWeightForDay(weighInByDayMap:Map<string, WeighIn[]>):Map<string, number>{
         let toReturn:Map<string, number> = new Map<string, number>();
         weighInByDayMap.forEach(function(value:WeighIn[], key:string, map:Map<string, WeighIn[]>){
@@ -212,8 +210,8 @@ export class ProgressView {
         });
         return toReturn;
     }
-    
+
     getDateStringFromDate(date:Date):string{
-       return date.getMonth() + "-" + date.getDate() + "-" + date.getFullYear();
+       return (date.getMonth() + 1) + "-" + date.getDate() + "-" + date.getFullYear().toString().substr(2,2);
     }
 }

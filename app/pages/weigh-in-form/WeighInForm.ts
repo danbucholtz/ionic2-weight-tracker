@@ -71,6 +71,7 @@ export class WeighInForm{
         }).then(fileUrl => {
             let photo = new Photo();
             photo.filePath = fileUrl;
+            console.log("fileUrl: ", fileUrl);
             this.ngZone.run( () => {
                 this.photos.push(photo);    
             });
