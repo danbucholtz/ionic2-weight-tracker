@@ -40,7 +40,7 @@ export class ProgressView {
         setTimeout(() => {
             this.resizeCanvas();
             this.loadDataAndRenderGraph();
-        }, 150);
+        }, 300);
     }
 
     loadDataAndRenderGraph():void{
