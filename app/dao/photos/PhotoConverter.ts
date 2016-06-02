@@ -1,4 +1,4 @@
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 import {IConverter} from "../IConverter";
 import {Photo} from "./Photo";
 
@@ -7,7 +7,7 @@ import * as path from "path";
 
 @Injectable()
 export class PhotoConverter implements IConverter<Photo>{
-    
+
     convertModelToPersistableFormat(model:Photo):any{
         let toPersist:any = {};
         toPersist.id = model.id;
@@ -17,11 +17,11 @@ export class PhotoConverter implements IConverter<Photo>{
         toPersist.updated = model.updated.toJSON();
         return toPersist;
     }
-    
+
     convertPersistableFormatToModel(persistable:any):Photo{
         let photo:Photo = new Photo();
         photo.id = persistable.id;
-        photo.filePath = window["cordova"].file.dataDirectory + persistable.filePath;        
+        photo.filePath = window["cordova"].file.dataDirectory + persistable.filePath;
         photo.weighInId = persistable.weighInId;
         photo.created = new Date(persistable.created);
         photo.updated = new Date(persistable.updated);

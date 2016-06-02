@@ -1,4 +1,4 @@
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 import {BaseDao} from "../BaseDao";
 import {Photo} from "./Photo";
 import {PhotoConverter} from "./PhotoConverter";
@@ -8,15 +8,15 @@ const tableName = "photos";
 
 @Injectable()
 export class PhotoDao extends BaseDao<Photo>{
-    
+
     constructor(photoConverter:PhotoConverter, databaseManager:DatabaseManager){
         super(tableName, photoConverter, databaseManager);
     }
-    
+
     createTableIfDoesntExist():Promise<any>{
 		return this.databaseManager.executeQuery(`CREATE TABLE IF NOT EXISTS ${tableName} (id text primary key not null, filePath text not null, weighInId text not null, created text not null, updated text not null)`, null);
 	}
-    
+
     insert(object:any):Promise<any>{
         var query = `
             INSERT INTO ${tableName}
@@ -25,7 +25,7 @@ export class PhotoDao extends BaseDao<Photo>{
         `;
         return this.databaseManager.executeQuery(query, [object.id, object.filePath, object.weighInId, object.created, object.updated]);
     }
-    
+
     update(object:any):Promise<any>{
         var query = `
             UPDATE ${tableName}

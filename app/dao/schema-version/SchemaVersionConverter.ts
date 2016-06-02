@@ -1,12 +1,12 @@
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 
 import {IConverter} from "../IConverter";
 import {SchemaVersion} from "./SchemaVersion";
 
 @Injectable()
 export class SchemaVersionConverter implements IConverter<SchemaVersion>{
-    
-    
+
+
     convertModelToPersistableFormat(model:SchemaVersion):any{
         let toPersist:any = {};
         toPersist.id = model.id;
@@ -15,7 +15,7 @@ export class SchemaVersionConverter implements IConverter<SchemaVersion>{
         toPersist.updated = model.updated.toJSON();
         return toPersist;
     }
-    
+
     convertPersistableFormatToModel(persistable:any):SchemaVersion{
         let schemaVersion:SchemaVersion = new SchemaVersion();
         schemaVersion.id = persistable.id;

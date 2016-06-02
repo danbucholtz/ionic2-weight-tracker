@@ -1,11 +1,11 @@
-import {Page} from "ionic-angular";
+import {Component} from "@angular/core";
 
 import {WeighIn} from "../../dao/weigh-in/WeighIn";
 import {WeighInDao} from "../../dao/weigh-in/WeighInDao";
 
 declare let Chart:any;
 
-@Page({
+@Component({
     template: `
     <ion-navbar *navbar primary>
         <ion-title>Progress Chart</ion-title>
@@ -35,7 +35,7 @@ export class ProgressView {
         this.weighInDao = weighInDao;
     }
 
-    onPageDidEnter(){
+    ionViewDidEnter(){
         this.initializeData();
         setTimeout(() => {
             this.resizeCanvas();

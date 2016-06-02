@@ -1,4 +1,4 @@
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 
 import {Storage, SqlStorage} from "ionic-angular";
 
@@ -18,7 +18,7 @@ export class DatabaseManager{
             parameters = [];
         }
         return this.storage.query(query, parameters).then(function(response){
-            return response.res; 
+            return response.res;
         });
     }
 }

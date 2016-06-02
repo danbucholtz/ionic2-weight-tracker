@@ -1,25 +1,23 @@
-import {Page} from "ionic-angular";
+import {Component} from "@angular/core";
 
 import {Photo} from "../../dao/photos/Photo";
 import {PhotoDao} from "../../dao/photos/PhotoDao";
 import {WeighIn} from "../../dao/weigh-in/WeighIn";
 import {WeighInDao} from "../../dao/weigh-in/WeighInDao";
 
-import {NgZone} from "angular2/core";
-
-@Page({
+@Component({
     template: `
     <ion-navbar *navbar primary>
         <ion-title>Photo List</ion-title>
     </ion-navbar>
     <ion-content>
         <ion-list>
-            <div *ngFor="#weighIn of _weighIns">
+            <div *ngFor="let weighIn of _weighIns">
                 <ion-list-header class="light-background">
                     {{weighIn.headline}} - {{weighIn.weight}} LBS
                 </ion-list-header>
                 <div *ngIf="weighIn?.photos.length > 0">
-                    <ion-item-sliding *ngFor="#photo of weighIn.photos">
+                    <ion-item-sliding *ngFor="let photo of weighIn.photos">
                         <ion-item>
                             <img style="width: 100%" [src]="photo.filePath">
                         </ion-item>
@@ -36,7 +34,7 @@ import {NgZone} from "angular2/core";
                         <ion-item-options>
                             <button danger (click)="deleteWeighIn(weighIn)">Delete</button>
                         </ion-item-options>
-                    </ion-item-sliding>                    
+                    </ion-item-sliding>
                 </div>
             </div>
         </ion-list>
@@ -45,22 +43,19 @@ import {NgZone} from "angular2/core";
 })
 export class PhotoList{
     private _weighIns:WeighIn[];
-    private ngZone:NgZone;
 
-    constructor(private photoDao:PhotoDao, private weighInDao:WeighInDao, ngZone:NgZone){
+    constructor(private photoDao:PhotoDao, private weighInDao:WeighInDao){
         this.photoDao = photoDao;
         this.weighInDao = weighInDao;
-        this.ngZone = ngZone;
         this._weighIns = [];
     }
 
-    onPageDidEnter(){
+    ionViewDidEnter(){
         this.loadData();
     }
-    
+
     loadData():void{
         let _map = null;
-        var self = this;
         this.getWeighInPhotoMap().then(map => {
             _map = map;
             return this.weighInDao.getAll();
@@ -75,9 +70,9 @@ export class PhotoList{
          }
          return weighIns;
        }).then(results => {
-            self.ngZone.run(() => {
-                self._weighIns = results;
-            });
+            //this.ngZone.run(() => {
+                this._weighIns = results;
+            //});
         }).catch(error => {
            alert(`Failed to load photos and weigh-in data - ${error.message}`);
         });
@@ -97,7 +92,7 @@ export class PhotoList{
            return map;
         });
     }
-    
+
     deleteWeighIn(weighIn:WeighIn):void{
         // first, delete the photos associated with item
         let promises:Promise<any>[] = [];
@@ -105,11 +100,11 @@ export class PhotoList{
             promises.push(this.photoDao.delete(photo.id));
         }
         Promise.all(promises).then(() => {
-           return this.weighInDao.delete(weighIn.id); 
+           return this.weighInDao.delete(weighIn.id);
         }).then( () => {
             return this.loadData();
         }).catch(error => {
-           alert(`Failed to delete weigh in and photos - ${error.message}`); 
+           alert(`Failed to delete weigh in and photos - ${error.message}`);
         });
     }
 }

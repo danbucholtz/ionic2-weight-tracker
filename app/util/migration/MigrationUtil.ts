@@ -1,4 +1,4 @@
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 
 import {Migration} from "./Migration";
 import {MigrationProvider} from "./MigrationProvider";
@@ -11,7 +11,7 @@ export class MigrationUtil{
         this.migrationProvider = migrationProvider;
         this.schemaVersionDao = schemaVersionDao;
     }
-    
+
     getOrCreateSchemaVersion():Promise<SchemaVersion>{
         return this.schemaVersionDao.createTableIfDoesntExist().then(() => {
             return this.schemaVersionDao.getAll();
@@ -24,14 +24,14 @@ export class MigrationUtil{
            return this.schemaVersionDao.save(schemaVersion);
         });
     }
-    
+
     executeMigrations(){
         return this.getOrCreateSchemaVersion().then(schemaVersion => {
             let migrationsToExecute = this.migrationProvider.getMigrations();
             return this.executeMigrationsInternal(schemaVersion, migrationsToExecute);
         });
     }
-    
+
     private executeMigrationsInternal(schemaVersion:SchemaVersion, migrations:Migration[]):Promise<any>{
         if ( migrations.length > 0 ){
             let migration = migrations[0];
@@ -43,13 +43,13 @@ export class MigrationUtil{
                 }).then(() => {
                    let remainingMigrations = migrations.concat();
                    remainingMigrations.shift();
-                   return this.executeMigrationsInternal(schemaVersion, remainingMigrations); 
+                   return this.executeMigrationsInternal(schemaVersion, remainingMigrations);
                 });
             }
             else{
                 let remainingMigrations = migrations.concat();
                 remainingMigrations.shift();
-                return this.executeMigrationsInternal(schemaVersion, remainingMigrations); 
+                return this.executeMigrationsInternal(schemaVersion, remainingMigrations);
             }
         }
         else{

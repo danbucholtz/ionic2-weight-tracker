@@ -1,4 +1,5 @@
-import {Events, Page} from "ionic-angular";
+import {Component} from "@angular/core";
+import {Events} from "ionic-angular";
 
 import {Camera} from "ionic-native";
 import {File} from "ionic-native";
@@ -8,78 +9,75 @@ import {PhotoDao} from "../../dao/photos/PhotoDao";
 import {WeighIn} from "../../dao/weigh-in/WeighIn";
 import {WeighInDao} from "../../dao/weigh-in/WeighInDao";
 
-import {NgZone} from "angular2/core";
-
-@Page({
+@Component({
     template: `
     <ion-navbar *navbar primary>
         <ion-title>Enter Weight</ion-title>
     </ion-navbar>
     <ion-content>
-        <ion-item>
+        <ion-item *ngIf="weighIn">
             <ion-label fixed>Weight <span danger>*</span></ion-label>
             <ion-input type="number" [(ngModel)]="weighIn.weight" min="50" max="1000"></ion-input>
         </ion-item>
         <button ion-item (click)="takePhoto()">
             <span class="gray-text">Take Photo</span>
         </button>
-        <ion-item *ngFor="#photo of photos">
+        <ion-item *ngFor="let photo of photos">
             <img [src]="photo.filePath">
         </ion-item>
-        <div padding>
+        <div padding *ngIf="weighIn">
             <button primary block [disabled]="!weighIn.weight" (click)="saveWeighIn()">Save Weigh In</button>
         </div>
     </ion-content>
     `
 })
 export class WeighInForm{
-    
+
     private eventDispatcher:Events;
     private photoDao:PhotoDao;
     private weighInDao:WeighInDao
     private weighIn:WeighIn;
     private photos:Photo[];
-    private ngZone:NgZone;
-    
-    constructor(eventDispatcher:Events, photoDao:PhotoDao, weighInDao:WeighInDao, ngZone:NgZone){
+
+    constructor(eventDispatcher:Events, photoDao:PhotoDao, weighInDao:WeighInDao){
         this.eventDispatcher = eventDispatcher;
         this.photoDao = photoDao;
         this.weighInDao = weighInDao;
-        this.ngZone = ngZone;
         this.photos = [];
     }
-    
-    onPageWillEnter(){
+
+    ionViewWillEnter(){
         this.weighIn = new WeighIn();
     }
-    
+
     takePhoto(){
         let options = {
-			quality: 80,
-			destinationType: window["Camera"].DestinationType.FILE_URI,
-			encodingType: window["Camera"].EncodingType.JPEG,
-			correctOrientation: true
-		};
-        
+    			quality: 80,
+    			destinationType: window["Camera"].DestinationType.FILE_URI,
+    			encodingType: window["Camera"].EncodingType.JPEG,
+    			correctOrientation: true
+		    };
+
+        /* this section takes a photo and writes it to the application data directory */
         Camera.getPicture(options).then(fileUrl => {
            let currentFileName = fileUrl.replace(/^.*[\\\/]/, "");
            let pathMinusFileName = fileUrl.replace(currentFileName, "");
            let newfileName = `${(new Date()).getTime()}.jpg`;
            return File.moveFile(pathMinusFileName, currentFileName, window["cordova"].file.dataDirectory, newfileName);
         }).then(fileDescriptor => {
-           return fileDescriptor.nativeURL; 
+           return fileDescriptor.nativeURL;
         }).then(fileUrl => {
             let photo = new Photo();
             photo.filePath = fileUrl;
             console.log("fileUrl: ", fileUrl);
-            this.ngZone.run( () => {
-                this.photos.push(photo);    
-            });
+            //this.ngZone.run( () => {
+                this.photos.push(photo);
+            //});
         }).catch(error => {
-           alert(`Failed to take photo and persist to app storage - ${error.message}`); 
+           alert(`Failed to take photo and persist to app storage - ${error.message}`);
         });
     }
-    
+
     saveWeighIn(){
         // first, save the weighIn object
         this.weighInDao.save(this.weighIn).then(entity => {
@@ -94,7 +92,7 @@ export class WeighInForm{
           // w00t, the saves were successful, so now go ahead and switch to the progress tab
           this.eventDispatcher.publish("weighInComplete", {});
         }).catch(error => {
-           alert(`Failed to save weigh-in record and/or photos - ${error.message}`); 
+           alert(`Failed to save weigh-in record and/or photos - ${error.message}`);
         });
     }
 }
